@@ -38,6 +38,8 @@ public class Invoice {
     @Column(name = "UPDATE_DATE")
     private Date updateDate;
 
+    private String taxDetail;
+
     @OneToMany(mappedBy = "invoice", cascade = {CascadeType.ALL})
     private List<InvoiceLine> invoiceLines;
 
@@ -46,8 +48,12 @@ public class Invoice {
     }
 
     public void calculateTotal(){
-        this.setTotalTax(this.getSubtotal()*this.getTaxPercent());
-        this.setTotal(this.getSubtotal()+this.getTotalTax());
+        this.setTotalTax(((Math.round(this.getSubtotal()*this.getTaxPercent())*100.0)/100.0));
+        this.setTotal(((Math.round(this.getSubtotal()+this.getTotalTax())*100.0)/100.0));
+    }
+
+    public String getTaxDetail(){
+        return String.valueOf(Math.round(this.taxPercent * 100.00)) + "%";
     }
 
 

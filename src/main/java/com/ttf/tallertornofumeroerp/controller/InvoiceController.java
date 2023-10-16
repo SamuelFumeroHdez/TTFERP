@@ -3,11 +3,13 @@ import com.ttf.tallertornofumeroerp.exception.customer.CustomerNotFoundException
 import com.ttf.tallertornofumeroerp.exception.invoice.InvoiceNotFoundException;
 import com.ttf.tallertornofumeroerp.model.Invoice;
 import com.ttf.tallertornofumeroerp.service.impl.InvoiceService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.ParseException;
 import java.util.List;
 
 @RestController
@@ -50,5 +52,12 @@ public class InvoiceController {
     @DeleteMapping(value = "/{invoiceNumber}")
     public void deleteInvoice(@PathVariable("invoiceNumber") String invoiceNumber) throws InvoiceNotFoundException {
         invoiceService.deleteInvoice(invoiceNumber);
+    }
+
+    @GetMapping(
+            value = "generate-invoice-report/{invoiceNumber}"
+    )
+    public void generateInvoiceReport(@PathVariable("invoiceNumber") String invoiceNumber, HttpServletResponse response) throws ParseException {
+        invoiceService.generateReport(invoiceNumber, response);
     }
 }

@@ -45,7 +45,7 @@ public class InvoiceLineService implements IInvoiceLineService {
         if(invoice==null){
             throw new InvoiceNotFoundException("The invoice don't exist");
         }
-        invoice.setSubtotal(invoice.getSubtotal()+invoiceLine.getTotal());
+        invoice.setSubtotal((double) ((Math.round(invoice.getSubtotal()+invoiceLine.getTotal())*100)/100));
         invoice.calculateTotal();
         invoiceService.updateInvoice(invoiceLine.getInvoiceNumber(), invoice);
 
@@ -66,7 +66,7 @@ public class InvoiceLineService implements IInvoiceLineService {
         if(invoice == null){
             throw new InvoiceNotFoundException("Can't find the invoice");
         }
-        invoice.setSubtotal(invoice.getSubtotal()-invoiceLineDB.getTotal()+invoiceLine.getTotal());
+        invoice.setSubtotal((double) ((Math.round(invoice.getSubtotal()-invoiceLineDB.getTotal()+invoiceLine.getTotal())*100)/100));
         invoice.calculateTotal();
         invoiceService.updateInvoice(invoiceLine.getInvoiceNumber(), invoice);
 

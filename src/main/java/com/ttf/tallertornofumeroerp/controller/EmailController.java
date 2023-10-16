@@ -51,4 +51,11 @@ public class EmailController {
     public void deleteEmail(@PathVariable("emailAddress") String emailAddress) throws EmailNotFoundException {
         emailService.deleteEmail(emailAddress);
     }
+
+    @PostMapping(
+            value = "/sendEmail/{invoiceNumber}"
+    )
+    public void sendEmail(@PathVariable("invoiceNumber") String invoiceNumber){
+        emailService.sendEmail(invoiceNumber);
+    }
 }

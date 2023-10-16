@@ -1,7 +1,9 @@
 package com.ttf.tallertornofumeroerp.service;
 
 import com.ttf.tallertornofumeroerp.model.Invoice;
+import jakarta.servlet.http.HttpServletResponse;
 
+import java.text.ParseException;
 import java.util.List;
 
 public interface IInvoiceService {
@@ -10,4 +12,5 @@ public interface IInvoiceService {
     Invoice createInvoice(Invoice invoice);
     Invoice updateInvoice(String invoiceNumber, Invoice invoice);
     void deleteInvoice(String invoiceNumber);
+    void generateReport(String invoiceNumber, HttpServletResponse response) throws ParseException;
 }

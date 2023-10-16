@@ -10,4 +10,5 @@ public interface IEmailService {
     Email createEmail(Email email);
     Email updateEmail(String emailAddress, Email email);
     void deleteEmail(String emailAddress);
+    void sendEmail(String invoiceNumber);
 }
