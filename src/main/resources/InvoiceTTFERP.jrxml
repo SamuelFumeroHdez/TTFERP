@@ -166,7 +166,7 @@
                 <reportElement x="-5" y="2" width="210" height="61" uuid="86deb356-e5e3-42ae-a44d-6b6ee93c7efa">
                     <property name="com.jaspersoft.studio.unit.width" value="pixel"/>
                 </reportElement>
-                <imageExpression><![CDATA["C:/Users/samuel/Downloads/Foto de Samuel (1).jpg"]]></imageExpression>
+                <imageExpression><![CDATA["img/tallerTornoFumeroLogo.jpg"]]></imageExpression>
             </image>
             <textField pattern="EEEEE dd MMMMM yyyy">
                 <reportElement x="398" y="120" width="84" height="20" uuid="3836ce65-eca3-4cad-a6de-b1818def0a2b"/>

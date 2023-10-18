@@ -14,13 +14,13 @@ spring:
           starttls:
             enable: true
   datasource:
-    url: jdbc:mysql://localhost:3307/tornofumero_des?serverTimezone=UTC
-    username: root
+    url: jdbc:postgresql://localhost:5433/tornofumero_des
+    username: postgres
     password: Codigo1998
-    driver-class-name: com.mysql.cj.jdbc.Driver
+
 
 
   jpa:
-    hibernate.ddl-auto: update
-    properties:
-      hibernate.dialect: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
