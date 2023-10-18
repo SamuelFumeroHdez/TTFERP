@@ -1,5 +1,3 @@
-server:
-  port: 8081
 
 spring:
   mail:
@@ -13,10 +11,6 @@ spring:
           auth: true
           starttls:
             enable: true
-#  datasource:
-#    url: jdbc:postgresql://localhost:5433/tornofumero_des
-#    username: postgres
-#    password: Codigo1998
 
   datasource:
     url: jdbc:postgresql://ec2-54-208-11-146.compute-1.amazonaws.com:5432/d9v27j372sioa1
