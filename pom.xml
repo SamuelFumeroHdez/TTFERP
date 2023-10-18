@@ -75,11 +75,7 @@
 			<artifactId>commons-email</artifactId>
 			<version>1.5</version>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-compiler-plugin</artifactId>
-			<version>3.11.0</version>
-		</dependency>
+
 
 
 	</dependencies>
