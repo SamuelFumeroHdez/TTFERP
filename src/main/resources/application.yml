@@ -1,0 +1,26 @@
+server:
+  port: 8081
+
+spring:
+  mail:
+    host: smtp.office365.com
+    port: 587
+    username: samuelfumerohdez@hotmail.com
+    password: Codigo1998
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  datasource:
+    url: jdbc:mysql://localhost:3307/tornofumero_des?serverTimezone=UTC
+    username: root
+    password: Codigo1998
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+
+  jpa:
+    hibernate.ddl-auto: update
+    properties:
+      hibernate.dialect: org.hibernate.dialect.MySQLDialect
