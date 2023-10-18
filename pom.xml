@@ -81,6 +81,7 @@
 			<version>3.11.0</version>
 		</dependency>
 
+
 	</dependencies>
 
 	<build>
@@ -98,13 +99,9 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.11.0</version> <!-- Versión compatible con Java 17 -->
-				<configuration>
-					<source>17</source>
-					<target>17</target>
-				</configuration>
+				<groupId>com.heroku.sdk</groupId>
+				<artifactId>heroku-maven-plugin</artifactId>
+				<version>3.0.7</version>
 			</plugin>
 		</plugins>
 	</build>
