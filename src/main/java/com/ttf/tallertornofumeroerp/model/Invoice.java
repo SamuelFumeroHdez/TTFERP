@@ -3,6 +3,7 @@ package com.ttf.tallertornofumeroerp.model;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import com.ttf.tallertornofumeroerp.utils.DecimalFormater;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -48,12 +49,12 @@ public class Invoice {
     }
 
     public void calculateTotal(){
-        this.setTotalTax(((Math.round(this.getSubtotal()*this.getTaxPercent())*100.0)/100.0));
-        this.setTotal(((Math.round(this.getSubtotal()+this.getTotalTax())*100.0)/100.0));
+        this.setTotalTax(DecimalFormater.numberFormatter(this.getSubtotal()*this.getTaxPercent()));
+        this.setTotal(DecimalFormater.numberFormatter(this.getSubtotal()+this.getTotalTax()));
     }
 
     public String getTaxDetail(){
-        return String.valueOf(Math.round(this.taxPercent * 100.00)) + "%";
+        return String.valueOf(this.taxPercent*100) + "%";
     }
 
 

@@ -52,10 +52,10 @@ public class EmailController {
         emailService.deleteEmail(emailAddress);
     }
 
-    @PostMapping(
+    /*@PostMapping(
             value = "/sendEmail/{invoiceNumber}"
     )
     public void sendEmail(@PathVariable("invoiceNumber") String invoiceNumber){
         emailService.sendEmail(invoiceNumber);
-    }
+    }*/
 }

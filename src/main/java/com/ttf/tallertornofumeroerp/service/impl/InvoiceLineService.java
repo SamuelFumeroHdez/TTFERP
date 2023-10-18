@@ -9,6 +9,7 @@ import com.ttf.tallertornofumeroerp.repository.IInvoiceLineRepository;
 import com.ttf.tallertornofumeroerp.repository.IInvoiceRepository;
 import com.ttf.tallertornofumeroerp.service.IInvoiceLineService;
 import com.ttf.tallertornofumeroerp.service.IInvoiceService;
+import com.ttf.tallertornofumeroerp.utils.DecimalFormater;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,7 +46,7 @@ public class InvoiceLineService implements IInvoiceLineService {
         if(invoice==null){
             throw new InvoiceNotFoundException("The invoice don't exist");
         }
-        invoice.setSubtotal((double) ((Math.round(invoice.getSubtotal()+invoiceLine.getTotal())*100)/100));
+        invoice.setSubtotal(DecimalFormater.numberFormatter(invoice.getSubtotal()+invoiceLine.getTotal()));
         invoice.calculateTotal();
         invoiceService.updateInvoice(invoiceLine.getInvoiceNumber(), invoice);
 
@@ -66,7 +67,8 @@ public class InvoiceLineService implements IInvoiceLineService {
         if(invoice == null){
             throw new InvoiceNotFoundException("Can't find the invoice");
         }
-        invoice.setSubtotal((double) ((Math.round(invoice.getSubtotal()-invoiceLineDB.getTotal()+invoiceLine.getTotal())*100)/100));
+
+        invoice.setSubtotal(DecimalFormater.numberFormatter(invoice.getSubtotal()-invoiceLineDB.getTotal()+invoiceLine.getTotal()));
         invoice.calculateTotal();
         invoiceService.updateInvoice(invoiceLine.getInvoiceNumber(), invoice);
 

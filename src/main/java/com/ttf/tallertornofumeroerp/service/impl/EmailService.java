@@ -10,12 +10,7 @@ import com.ttf.tallertornofumeroerp.model.Invoice;
 import com.ttf.tallertornofumeroerp.repository.IEmailRespository;
 import com.ttf.tallertornofumeroerp.service.IEmailService;
 import com.ttf.tallertornofumeroerp.service.IInvoiceService;
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,8 +27,8 @@ public class EmailService implements IEmailService {
     @Autowired
     private IInvoiceService invoiceService;
 
-    @Autowired
-    private JavaMailSender javaMailSender;
+    /*@Autowired
+    private JavaMailSender javaMailSender;*/
 
 
     @Override
@@ -98,7 +93,7 @@ public class EmailService implements IEmailService {
         emailRespository.delete(emailDB);
     }
 
-    @Override
+    /*@Override
     public void sendEmail(String invoiceNumber) {
         Invoice invoice = invoiceService.retrieveInvoice(invoiceNumber);
         if(invoice == null){
@@ -128,13 +123,5 @@ public class EmailService implements IEmailService {
         } catch (MessagingException e) {
             // Manejar excepciones
         }
-
-        /*SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(customerEmail);
-        message.setSubject("Invoice " + invoiceNumber);
-        message.setText("<strong>Invoice " + invoiceNumber + " details" + "</strong>" +
-                "<p>Customer: " + customerName + "</p>");
-
-        javaMailSender.send(message);*/
-    }
+    }*/
 }

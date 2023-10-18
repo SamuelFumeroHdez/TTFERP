@@ -12,21 +12,30 @@ import com.ttf.tallertornofumeroerp.repository.ICustomerRepository;
 import com.ttf.tallertornofumeroerp.repository.IInvoiceLineRepository;
 import com.ttf.tallertornofumeroerp.repository.IInvoiceRepository;
 import com.ttf.tallertornofumeroerp.service.IInvoiceService;
+import com.ttf.tallertornofumeroerp.utils.EmailSender;
 import jakarta.servlet.http.HttpServletResponse;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanArrayDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.util.JRLoader;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 
+
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.*;
 
 @Service
@@ -40,6 +49,9 @@ public class InvoiceService implements IInvoiceService {
 
     @Autowired
     ICustomerRepository customerRepository;
+
+    @Autowired
+    EmailSender emailSender;
 
     @Override
     public List<Invoice> retrieveAllInvoices() {
@@ -113,19 +125,23 @@ public class InvoiceService implements IInvoiceService {
             throw new CustomerNotFoundException("Can't find the customer with NIF " + invoice.getCustomerNif());
         }
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd"); // Puedes personalizar el formato según tu necesidad
-        Date date = dateFormat.parse("2023-10-15");
-
         List<InvoiceLine> lines = invoice.getInvoiceLines();
         List<InvoiceLineDTO> linesDTO = new ArrayList<>();
 
         InvoiceLineDTO invoiceLineDTO = null;
+        linesDTO.add(new InvoiceLineDTO()); //Esto se hace porque jasper no coge el primer elemento del Array
         for(InvoiceLine line : lines){
             invoiceLineDTO = new InvoiceLineDTO();
             linesDTO.add(invoiceLineDTO.convertInvoiceLinetoDTO(line));
         }
 
-
+        LocalDate currentDate = LocalDate.now();
+        String day = String.valueOf(currentDate.getDayOfMonth());
+        String month = String.valueOf(currentDate.getMonthValue());
+        String year = String.valueOf(currentDate.getYear());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = dateFormat.parse(year + "-" + month + "-" + day);
+        String fileName = "Invoice_" + invoiceNumber + ".pdf";
 
         try {
             // Cargar el informe Jasper
@@ -148,11 +164,45 @@ public class InvoiceService implements IInvoiceService {
 
             // Rellenar el informe con los datos
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSourceP);
-            JasperExportManager.exportReportToPdfFile(jasperPrint, "invoice.pdf");
+
+            createPathToSaveInvoice(year, month, customer.getCustomerName());
+
+            String path = System.getProperty("user.home") + "/Desktop/InformesFacturas/" + customer.getCustomerName() +
+                    "/" + year + "/" + month + "/" + fileName;
+
+            JasperExportManager.exportReportToPdfFile(jasperPrint, path);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+    }
+
+    @Override
+    public void sendInvoiceEmail(String invoiceNumber) throws IOException {
+
+        Invoice invoice = retrieveInvoice(invoiceNumber);
+        Customer customer = customerRepository.findById(invoice.getCustomerNif()).orElse(null);
+        String fileName = "Invoice_" + invoiceNumber + ".pdf";
+
+        if(customer==null){
+            throw new CustomerNotFoundException("The customer doesn't exists");
+        }
+
+        String emailTemplate = getEmailTemplate();
+        emailTemplate = emailTemplate.replace("{{INVOICE_NUMBER}}", invoiceNumber);
+
+        String subject = "Factura " + invoiceNumber + " - " + customer.getCustomerName();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(invoice.getUpdateDate());
+
+        String year = String.valueOf(calendar.get(Calendar.YEAR));
+        String month = String.valueOf(calendar.get(Calendar.MONTH)+1);
+
+        String path = System.getProperty("user.home") + "/Desktop/InformesFacturas/" + customer.getCustomerName() +
+                "/" + year + "/" + month + "/" + fileName;
+
+        emailSender.sendEmail(customer.getEmails(), subject, emailTemplate, path);
     }
 
     private String getFormattedPrice(Double number){
@@ -160,4 +210,37 @@ public class InvoiceService implements IInvoiceService {
         String formattedPrice = String.valueOf(decimalFormat.format(number)) + " €";
         return formattedPrice;
     }
+
+    private void createPathToSaveInvoice(String year, String month, String customerName) throws IOException {
+        Path path = Paths.get(System.getProperty("user.home") + "/Desktop/InformesFacturas/" + customerName + "/" + year + "/" +
+                month);
+
+        if(!Files.exists(path)){
+            Files.createDirectories(path);
+            System.out.println("Directory created succesfully");
+        }else{
+            System.out.println("This directory already exists");
+        }
+
+    }
+
+    private String getEmailTemplate() throws IOException {
+        ClassLoader classLoader = getClass().getClassLoader();
+        InputStream inputStream = classLoader.getResourceAsStream("templates/emailTemplate.html");
+        if (inputStream != null) {
+            try {
+                // Lee el contenido del archivo y conviértelo en una cadena
+                return IOUtils.toString(inputStream, StandardCharsets.UTF_8);
+            } catch (IOException exception) {
+                exception.printStackTrace();
+            } finally {
+                inputStream.close();
+            }
+        } else {
+            throw new IOException("No se pudo encontrar el archivo HTML en la ubicación especificada.");
+        }
+        return null;
+    }
+
+
 }

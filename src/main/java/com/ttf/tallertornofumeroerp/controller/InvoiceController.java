@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.util.List;
 
@@ -59,5 +60,12 @@ public class InvoiceController {
     )
     public void generateInvoiceReport(@PathVariable("invoiceNumber") String invoiceNumber, HttpServletResponse response) throws ParseException {
         invoiceService.generateReport(invoiceNumber, response);
+    }
+
+    @PostMapping(
+            value = "send-invoice-email/{invoiceNumber}"
+    )
+    public void sendInvoiceEmail(@PathVariable("invoiceNumber") String invoiceNumber) throws IOException {
+        invoiceService.sendInvoiceEmail(invoiceNumber);
     }
 }
